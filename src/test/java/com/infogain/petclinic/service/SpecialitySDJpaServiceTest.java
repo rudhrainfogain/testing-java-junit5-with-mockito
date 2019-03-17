@@ -9,8 +9,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -46,6 +44,10 @@ public class SpecialitySDJpaServiceTest {
 
 	@Test
 	void deleteById() {
+		// Given-none
+
+		// When
+
 		/*
 		 * DeleteById() uses an object of SpecialtyRepository which was autowired into
 		 * the class .For testing purposes we are making it to use the mocked version of
@@ -54,154 +56,111 @@ public class SpecialitySDJpaServiceTest {
 		service.deleteById(1l);
 		service.deleteById(1l);
 
+		// Then
+
 		/*
 		 * Verify that specialtyRepository was called 2 times for the method
 		 * deleteById() with parameter of 1l
 		 */
-		verify(specialtyRepository, times(2)).deleteById(1l);
+		then(specialtyRepository).should(times(2)).deleteById(1l);
 	}
 
 	@Test
 	void deleteByIdAtLeast() {
+		// Given-none
+
+		// When
+
 		service.deleteById(1l);
 		service.deleteById(1l);
+
+		// Then
+
 		/*
 		 * Verify that specialtyRepository was called at least 1 times for the method
 		 * deleteById() with parameter of 1l
 		 */
-		verify(specialtyRepository, atLeastOnce()).deleteById(1l);
+		then(specialtyRepository).should(atLeastOnce()).deleteById(1l);
 	}
 
 	@Test
 	void deleteByIdAtMost() {
+		// Given-none
+
+		// When
+
 		service.deleteById(1l);
 		service.deleteById(1l);
+
+		// Then
+
 		/*
 		 * Verify that specialtyRepository was called at most 5 times for the method
 		 * deleteById() with parameter of 1l
 		 */
-		verify(specialtyRepository, atMost(5)).deleteById(1l);
+		then(specialtyRepository).should(atMost(5)).deleteById(1l);
 	}
 
 	@Test
 	void deleteByIdNever() {
+		// Given-none
+
+		// When
+
 		service.deleteById(1l);
 		service.deleteById(1l);
+
+		// Then
+
 		/*
 		 * Verify that specialtyRepository was called at least 1 times for the method
 		 * deleteById() with parameter of 1l
 		 */
-		verify(specialtyRepository, atLeastOnce()).deleteById(1l);
+		then(specialtyRepository).should(atLeastOnce()).deleteById(1l);
 		/*
 		 * Verify that specialtyRepository was never called for the method deleteById()
 		 * with parameter of 5l
 		 */
-		verify(specialtyRepository, never()).deleteById(5L);
+		then(specialtyRepository).should(never()).deleteById(5l);
 	}
 
 	@Test
 	void testDelete() {
-		Speciality speciality = new Speciality();
-		/*
-		 * Delete() uses an object of SpecialtyRepository which was autowired into the
-		 * class .For testing purposes we are making it to use the mocked version of
-		 * SpecialtyRepository
-		 */
+		// Given
 
-		service.delete(speciality);
-
-		/*
-		 * Verify that specialtyRepository was called 1 times for the method delete()
-		 * with parameter speciality
-		 */
-		verify(specialtyRepository, times(1)).delete(speciality);
-	}
-
-	@Test
-	void findByIdTest() {
-		/*
-		 * The instance that we are going to use for return by our mock
-		 */
-		Speciality speciality = new Speciality();
-		/*
-		 * Setting when and what to return. When findById() method of our mocked object
-		 * ie specialtyRepository is called with parameter 1l then return the speciality
-		 * object created above
-		 */
-		when(specialtyRepository.findById(1L)).thenReturn(Optional.of(speciality));
-		/*
-		 * Calling the actual method under test
-		 */
-		Speciality foundSpecialty = service.findById(1L);
-		/*
-		 * asserting that an object was returned and null was not returned
-		 */
-		assertThat(foundSpecialty).isNotNull();
-		/*
-		 * Verify that specialtyRepository was called 1 times for the method findById()
-		 * with parameter of 1l
-		 */
-		verify(specialtyRepository).findById(1L);
-
-	}
-
-	@Test
-	void testDeleteUsingArgumentMatcher() {
 		/*
 		 * The instance that we are going to use as a parameter for our mock
 		 */
 		Speciality speciality = new Speciality();
+
+		// When
+
 		/*
 		 * Delete() uses an object of SpecialtyRepository which was autowired into the
 		 * class .For testing purposes we are making it to use the mocked version of
 		 * SpecialtyRepository
 		 */
 		service.delete(speciality);
+
+		// Then
+
 		/*
 		 * Verify that specialtyRepository was called 1 times for the method delete()
 		 * with any parameter of type Speciality
 		 */
-		verify(specialtyRepository).delete(any(Speciality.class));
+		then(specialtyRepository).should().delete(any(Speciality.class));
 	}
 
 	@Test
-	void findByIdTestWithArgumentMatcher() {
-		/*
-		 * The instance that we are going to use for return by our mock
-		 */
-		Speciality speciality = new Speciality();
-		/*
-		 * Setting when and what to return. When findById() method of our mocked object
-		 * ie specialtyRepository is called with parameter 1l then return the speciality
-		 * object created above
-		 */
-		when(specialtyRepository.findById(1L)).thenReturn(Optional.of(speciality));
-		/*
-		 * Calling the actual method under test
-		 */
-		Speciality foundSpecialty = service.findById(1L);
-		/*
-		 * asserting that an object was returned and null was not returned
-		 */
-		assertThat(foundSpecialty).isNotNull();
-		/*
-		 * Verify that specialtyRepository was called 1 times for the method findById()
-		 * with any long parameter
-		 */
-		verify(specialtyRepository).findById(anyLong());
-
-	}
-
-	@Test
-	void findByIdBddTest() {
-		// given
+	void findByIdTest() {
+		// Given
 		Speciality speciality = new Speciality();
 		given(specialtyRepository.findById(1L)).willReturn(Optional.of(speciality));
 
-		// when
+		// When
 		Speciality foundSpecialty = service.findById(1L);
 
-		// then
+		// Then
 		assertThat(foundSpecialty).isNotNull();
 		then(specialtyRepository).should().findById(anyLong());
 		then(specialtyRepository).should(times(1)).findById(anyLong());
