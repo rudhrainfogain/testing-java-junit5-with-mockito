@@ -1,9 +1,11 @@
 package com.infogain.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
@@ -21,6 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.infogain.petclinic.model.Speciality;
 import com.infogain.petclinic.repositories.SpecialtyRepository;
@@ -32,6 +36,7 @@ import com.infogain.petclinic.services.springdatajpa.SpecialitySDJpaService;
  *         test using mockito
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness=Strictness.STRICT_STUBS)
 public class SpecialitySDJpaServiceTest {
 	/*
 	 * Mocking the dependent SpecialtyRepository which is used in the class we are
@@ -205,5 +210,48 @@ public class SpecialitySDJpaServiceTest {
 		assertThrows(RuntimeException.class, () -> specialtyRepository.delete(new Speciality()));
 
 		then(specialtyRepository).should().delete(any());
+	}
+
+	@Test
+	void testSaveLambda() {
+		// given
+		final String MATCH_ME = "MATCH_ME";
+		Speciality speciality = new Speciality();
+		speciality.setDescription(MATCH_ME);
+
+		Speciality savedSpecialty = new Speciality();
+		savedSpecialty.setId(1L);
+
+		// need mock to only return on match MATCH_ME string
+		given(specialtyRepository.save(argThat(argument -> argument.getDescription().equals(MATCH_ME))))
+				.willReturn(savedSpecialty);
+
+		// when
+		Speciality returnedSpecialty = service.save(speciality);
+
+		// then
+		assertThat(returnedSpecialty.getId()).isEqualTo(1L);
+	}
+
+	@Test
+	@MockitoSettings(strictness=Strictness.LENIENT)
+	void testSaveLambdaNoMatch() {
+		// given
+		final String MATCH_ME = "MATCH_ME";
+		Speciality speciality = new Speciality();
+		speciality.setDescription("Not a match");
+
+		Speciality savedSpecialty = new Speciality();
+		savedSpecialty.setId(1L);
+
+		// need mock to only return on match MATCH_ME string
+		given(specialtyRepository.save(argThat(argument -> argument.getDescription().equals(MATCH_ME))))
+				.willReturn(savedSpecialty);
+
+		// when
+		Speciality returnedSpecialty = service.save(speciality);
+
+		// then
+		assertNull(returnedSpecialty);
 	}
 }
