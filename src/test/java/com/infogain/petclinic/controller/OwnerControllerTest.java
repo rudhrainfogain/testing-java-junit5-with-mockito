@@ -28,6 +28,8 @@ import com.infogain.petclinic.services.OwnerService;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 @ExtendWith(MockitoExtension.class)
@@ -115,6 +117,7 @@ class OwnerControllerTest {
 		// inorder asserts
         inOrder.verify(ownerService).findAllByLastNameLike(anyString());
         inOrder.verify(model).addAttribute(anyString(), anyList());
+        verifyNoMoreInteractions(model);
 	}
 
 	@Test
@@ -127,6 +130,7 @@ class OwnerControllerTest {
 
 		// then
 		assertThat("%Koul%").isEqualToIgnoringCase(stringArgumentCaptor.getValue());
+		 verifyZeroInteractions(model);
 	}
 
 	@Test
@@ -137,9 +141,11 @@ class OwnerControllerTest {
 		// when
 		String viewName = controller.processFindForm(owner, bindingResult, null);
 
+		  verifyNoMoreInteractions(ownerService);
 		// then
 		assertThat("%DontFindMe%").isEqualToIgnoringCase(stringArgumentCaptor.getValue());
 		assertThat("owners/findOwners").isEqualToIgnoringCase(viewName);
+		 verifyZeroInteractions(model);
 	}
 
 }
