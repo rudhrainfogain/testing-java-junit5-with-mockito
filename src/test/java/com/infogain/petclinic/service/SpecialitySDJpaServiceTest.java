@@ -1,6 +1,8 @@
 package com.infogain.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.never;
@@ -107,8 +109,8 @@ public class SpecialitySDJpaServiceTest {
 		service.delete(speciality);
 
 		/*
-		 * Verify that specialtyRepository was called 2 times for the method
-		 * deleteById() with parameter speciality
+		 * Verify that specialtyRepository was called 1 times for the method delete()
+		 * with parameter speciality
 		 */
 		verify(specialtyRepository, times(1)).delete(speciality);
 	}
@@ -138,6 +140,53 @@ public class SpecialitySDJpaServiceTest {
 		 * with parameter of 1l
 		 */
 		verify(specialtyRepository).findById(1L);
+
+	}
+
+	@Test
+	void testDeleteUsingArgumentMatcher() {
+		/*
+		 * The instance that we are going to use as a parameter for our mock
+		 */
+		Speciality speciality = new Speciality();
+		/*
+		 * Delete() uses an object of SpecialtyRepository which was autowired into the
+		 * class .For testing purposes we are making it to use the mocked version of
+		 * SpecialtyRepository
+		 */
+		service.delete(speciality);
+		/*
+		 * Verify that specialtyRepository was called 1 times for the method delete()
+		 * with any parameter of type Speciality
+		 */
+		verify(specialtyRepository).delete(any(Speciality.class));
+	}
+
+	@Test
+	void findByIdTestWithArgumentMatcher() {
+		/*
+		 * The instance that we are going to use for return by our mock
+		 */
+		Speciality speciality = new Speciality();
+		/*
+		 * Setting when and what to return. When findById() method of our mocked object
+		 * ie specialtyRepository is called with parameter 1l then return the speciality
+		 * object created above
+		 */
+		when(specialtyRepository.findById(1L)).thenReturn(Optional.of(speciality));
+		/*
+		 * Calling the actual method under test
+		 */
+		Speciality foundSpecialty = service.findById(1L);
+		/*
+		 * asserting that an object was returned and null was not returned
+		 */
+		assertThat(foundSpecialty).isNotNull();
+		/*
+		 * Verify that specialtyRepository was called 1 times for the method findById()
+		 * with any long parameter
+		 */
+		verify(specialtyRepository).findById(anyLong());
 
 	}
 }
