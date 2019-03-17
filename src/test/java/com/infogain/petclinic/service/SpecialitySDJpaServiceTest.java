@@ -1,14 +1,18 @@
 package com.infogain.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 
@@ -165,5 +169,41 @@ public class SpecialitySDJpaServiceTest {
 		then(specialtyRepository).should().findById(anyLong());
 		then(specialtyRepository).should(times(1)).findById(anyLong());
 		then(specialtyRepository).shouldHaveNoMoreInteractions();
+	}
+
+	/**
+	 * Throwing exceptions with mockito without BDD
+	 */
+	@Test
+	void testDoThrow() {
+		doThrow(new RuntimeException("boom")).when(specialtyRepository).delete(any());
+
+		assertThrows(RuntimeException.class, () -> specialtyRepository.delete(new Speciality()));
+
+		verify(specialtyRepository).delete(any());
+	}
+
+	/**
+	 * Throwing exceptions with mockito BDD Style
+	 */
+	@Test
+	void testFindByIDThrows() {
+		given(specialtyRepository.findById(1L)).willThrow(new RuntimeException("boom"));
+
+		assertThrows(RuntimeException.class, () -> service.findById(1L));
+
+		then(specialtyRepository).should().findById(1L);
+	}
+
+	/**
+	 * Throwing exceptions with mockito for a method with void return type
+	 */
+	@Test
+	void testDeleteBDD() {
+		willThrow(new RuntimeException("boom")).given(specialtyRepository).delete(any());
+
+		assertThrows(RuntimeException.class, () -> specialtyRepository.delete(new Speciality()));
+
+		then(specialtyRepository).should().delete(any());
 	}
 }
