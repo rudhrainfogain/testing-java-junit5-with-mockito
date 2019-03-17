@@ -13,6 +13,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -89,7 +90,7 @@ public class SpecialitySDJpaServiceTest {
 		 * Verify that specialtyRepository was called at least 1 times for the method
 		 * deleteById() with parameter of 1l
 		 */
-		then(specialtyRepository).should(atLeastOnce()).deleteById(1l);
+		then(specialtyRepository).should(timeout(100).atLeastOnce()).deleteById(1l);
 	}
 
 	@Test
@@ -125,7 +126,7 @@ public class SpecialitySDJpaServiceTest {
 		 * Verify that specialtyRepository was called at least 1 times for the method
 		 * deleteById() with parameter of 1l
 		 */
-		then(specialtyRepository).should(atLeastOnce()).deleteById(1l);
+		then(specialtyRepository).should(timeout(100).atLeastOnce()).deleteById(1l);
 		/*
 		 * Verify that specialtyRepository was never called for the method deleteById()
 		 * with parameter of 5l
@@ -157,7 +158,7 @@ public class SpecialitySDJpaServiceTest {
 		 * Verify that specialtyRepository was called 1 times for the method delete()
 		 * with any parameter of type Speciality
 		 */
-		then(specialtyRepository).should().delete(any(Speciality.class));
+		then(specialtyRepository).should(timeout(100)).delete(any(Speciality.class));
 	}
 
 	@Test
@@ -172,7 +173,7 @@ public class SpecialitySDJpaServiceTest {
 		// Then
 		assertThat(foundSpecialty).isNotNull();
 		then(specialtyRepository).should().findById(anyLong());
-		then(specialtyRepository).should(times(1)).findById(anyLong());
+		then(specialtyRepository).should(timeout(100).times(1)).findById(anyLong());
 		then(specialtyRepository).shouldHaveNoMoreInteractions();
 	}
 
