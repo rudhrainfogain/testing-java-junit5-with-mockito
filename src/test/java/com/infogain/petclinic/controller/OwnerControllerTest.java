@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -24,6 +25,9 @@ import com.infogain.petclinic.fauxspring.BindingResult;
 import com.infogain.petclinic.fauxspring.Model;
 import com.infogain.petclinic.model.Owner;
 import com.infogain.petclinic.services.OwnerService;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
 
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 @ExtendWith(MockitoExtension.class)
@@ -43,7 +47,8 @@ class OwnerControllerTest {
 
 	@Captor
 	ArgumentCaptor<String> stringArgumentCaptor;
-
+	@Mock
+    Model model;
 	@BeforeEach
 	void setUp() {
 		given(ownerService.findAllByLastNameLike(stringArgumentCaptor.capture())).willAnswer(invocation -> {
@@ -99,13 +104,17 @@ class OwnerControllerTest {
 	void processFindFormWildcardFound() {
 		// given
 		Owner owner = new Owner(1l, "Rudhra", "FindMe");
-
+		InOrder inOrder = inOrder(ownerService, model);
 		// when
-		String viewName = controller.processFindForm(owner, bindingResult, Mockito.mock(Model.class));
+		String viewName = controller.processFindForm(owner, bindingResult, model);
 
 		// then
 		assertThat("%FindMe%").isEqualToIgnoringCase(stringArgumentCaptor.getValue());
 		assertThat("owners/ownersList").isEqualToIgnoringCase(viewName);
+		
+		// inorder asserts
+        inOrder.verify(ownerService).findAllByLastNameLike(anyString());
+        inOrder.verify(model).addAttribute(anyString(), anyList());
 	}
 
 	@Test
