@@ -27,9 +27,9 @@ public class AssumptionsTest implements ModelsTests,ControllersTests{
 
 	        assertEquals(1, 1);
 	    }
-	    @Test
-	    void justAnotherAlwaysFailingTestmethod() {
-
-	        assertEquals(1, 2);
-	    }
+	/*
+	 * @Test void justAnotherAlwaysFailingTestmethod() {
+	 * 
+	 * assertEquals(1, 2); }
+	 */
 }
