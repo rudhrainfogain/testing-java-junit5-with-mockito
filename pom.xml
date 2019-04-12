@@ -77,6 +77,7 @@ because we want to be to able to execute mvn sonar:sonar without passing a profi
 <!-- <sonar.junit.reportsPath>${project.build.directory}/surefire-reports/</sonar.junit.reportsPath> -->
 <!-- <sonar.tests>src/test/java</sonar.tests> -->
 <!-- === END of Sonar/Reporting settings === -->
+ <sonar.host.url>http://172.18.72.57:8585/sonar</sonar.host.url>
 	</properties>
 
 	<dependencies>
