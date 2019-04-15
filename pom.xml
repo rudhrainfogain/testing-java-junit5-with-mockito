@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.infogain</groupId>
-	<artifactId>testing-java-junit5-with-maven</artifactId>
+	<artifactId>testing-java-junit5-with-mockito</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
-	<name>testing-java-junit5</name>
-	<description>Testing Java with JUnit 5</description>
+	<name>testing-java-junit5-with-mockito</name>
+	<description>Testing Java with JUnit 5 and Mockito</description>
 
 	<developers>
 		<developer>
@@ -45,12 +45,13 @@
 <!-- Sonar/Jacoco integration. Note that these properties need to be defined outside the "coverage" profile
 because we want to be to able to execute mvn sonar:sonar without passing a profile -->
 <!-- Tells Sonar to use jacoco for coverage results -->
-<sonar.projectKey>com.infogain:testing-java-junit5-with-maven</sonar.projectKey>
-<sonar.projectName>testing-java-junit5-with-maven</sonar.projectName>
+<sonar.projectKey>com.infogain:testing-java-junit5-with-mockito</sonar.projectKey>
+<sonar.projectName>testing-java-junit5-with-mockito</sonar.projectName>
  <sonar.projectVersion>${yearMonth}</sonar.projectVersion>
 <sonar.language>java</sonar.language>
 <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
 <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+<sonar.host.url>http://172.18.72.57:8585/sonar/</sonar.host.url>
 <!-- Jacoco version to use -->
 <jacoco.version>0.8.3</jacoco.version>
 <!-- The Sonar Jacoco Listener for JUnit to extract coverage details per test -->
